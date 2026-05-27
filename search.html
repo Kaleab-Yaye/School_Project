@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Resources - StudentHub</title>
+    
+    <!-- CSS Design System -->
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/animations.css">
+    
+    <!-- Page Specific Styles -->
+    <link rel="stylesheet" href="css/pages/search.css">
+</head>
+<body>
+
+    <header></header>
+
+    <main class="container page-content" style="margin-top: var(--space-xl);">
+        
+        <!-- Header search container -->
+        <div class="mb-5" style="max-width: 600px; margin: 0 auto var(--space-2xl) auto;">
+            <h1 class="text-center mb-3" style="font-family: var(--font-heading);">Search Materials</h1>
+            <div class="search-container">
+                <button class="search-icon-btn">🔍</button>
+                <input type="text" id="global-search-input" class="search-input" placeholder="Search by name, course, or description..." autocomplete="off">
+                <div class="search-dropdown" id="global-search-dropdown"></div>
+            </div>
+        </div>
+
+        <div class="search-results-layout">
+            
+            <!-- Filters Sidebar -->
+            <aside class="search-filters-card">
+                <h3 style="font-size: var(--text-md); margin-bottom: var(--space-md);">Filters</h3>
+                
+                <!-- Resource Type -->
+                <div class="filter-section">
+                    <div class="filter-section-title">Material Type</div>
+                    <label class="filter-option">
+                        <input type="checkbox" name="type" value="pdf" checked>
+                        📁 PDFs
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" name="type" value="link" checked>
+                        🔗 Links
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" name="type" value="text" checked>
+                        📝 Text Notes
+                    </label>
+                </div>
+
+                <!-- Exam Type -->
+                <div class="filter-section">
+                    <div class="filter-section-title">Exam Type</div>
+                    <label class="filter-option">
+                        <input type="checkbox" name="exam" value="midterm" checked>
+                        Midterm
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" name="exam" value="final" checked>
+                        Final Exam
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" name="exam" value="quiz" checked>
+                        Quizzes
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" name="exam" value="notes" checked>
+                        Lecture Notes
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" name="exam" value="other" checked>
+                        Other
+                    </label>
+                </div>
+            </aside>
+
+            <!-- Results Listing -->
+            <section style="flex: 1;">
+                <div class="results-header">
+                    <div class="results-count" id="results-count-text">Found 0 resources</div>
+                    <select class="form-select" id="sort-select" style="width: auto; padding: var(--space-xs) var(--space-xl) var(--space-xs) var(--space-sm); font-size: var(--text-xs); border-radius: var(--radius-sm);">
+                        <option value="newest">Newest First</option>
+                        <option value="likes">Most Liked</option>
+                        <option value="views">Most Viewed</option>
+                    </select>
+                </div>
+
+                <div id="search-results-container">
+                    <!-- Skeletons load here -->
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <footer></footer>
+
+    <!-- Shared Utilities -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/components.js"></script>
+    <script src="js/router.js"></script>
+
+    <!-- Page Specific Script -->
+    <script src="js/search.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const resultsContainer = document.getElementById('search-results-container');
+            const searchInput = document.getElementById('global-search-input');
+            const resultsCountText = document.getElementById('results-count-text');
+            const sortSelect = document.getElementById('sort-select');
+            
+            // Read url query param
+            const initialQuery = Router.getParam('q') || '';
+            searchInput.value = initialQuery;
+
+            // Fetch and render matching resources
+            let allResults = [];
+
+            async function fetchResults() {
+                const queryVal = searchInput.value.trim();
+                renderSkeleton(resultsContainer, 3, 'card');
+                
+                try {
+                    // Fetch list from search endpoint
+                    const res = await apiGet(`/resources/search.php?q=${encodeURIComponent(queryVal)}`);
+                    if (res && res.success) {
+                        allResults = res.data;
+                        applyFiltersAndRender();
+                    } else {
+                        resultsContainer.innerHTML = '';
+                        renderEmptyState(resultsContainer, { title: 'Search Failed' });
+                    }
+                } catch (e) {
+                    console.error(e);
+                    resultsContainer.innerHTML = '';
+                    renderEmptyState(resultsContainer, {
+                        icon: '⚠️',
+                        title: 'Error loading results',
+                        message: 'Check your database connection or try again.'
+                    });
+                }
+            }
+
+            function applyFiltersAndRender() {
+                // Get checked categories
+                const checkedTypes = Array.from(document.querySelectorAll('input[name="type"]:checked')).map(el => el.value);
+                const checkedExams = Array.from(document.querySelectorAll('input[name="exam"]:checked')).map(el => el.value);
+                
+                let filtered = allResults.filter(item => {
+                    return checkedTypes.includes(item.resource_type) && checkedExams.includes(item.exam_type);
+                });
+
+                // Apply Sorting
+                const sortBy = sortSelect.value;
+                if (sortBy === 'newest') {
+                    filtered.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+                } else if (sortBy === 'likes') {
+                    filtered.sort((a,b) => (b.like_count || 0) - (a.like_count || 0));
+                } else if (sortBy === 'views') {
+                    filtered.sort((a,b) => (b.view_count || 0) - (a.view_count || 0));
+                }
+
+                // Render Results count
+                resultsCountText.textContent = `Found ${filtered.length} resources`;
+
+                if (filtered.length === 0) {
+                    renderEmptyState(resultsContainer, {
+                        icon: '🔍',
+                        title: 'No Matching Resources',
+                        message: 'Try adjusting your filters or search keywords.'
+                    });
+                    return;
+                }
+
+                // Render Cards
+                let html = '<div class="card-grid">';
+                filtered.forEach(res => {
+                    const typeBadge = res.resource_type === 'pdf' ? 'PDF Document' : (res.resource_type === 'link' ? 'External Link' : 'Text Note');
+                    const examBadge = res.exam_type.toUpperCase();
+                    
+                    // Create download button based on resource type
+                    let actionButton = '';
+                    if (res.resource_type === 'pdf' && res.file_path) {
+                        actionButton = `<a href="${res.file_path}" download class="btn btn-primary btn-sm" style="margin-top: var(--space-md); display: inline-block;">📥 Download PDF</a>`;
+                    } else if (res.resource_type === 'link' && res.external_link) {
+                        actionButton = `<a href="${res.external_link}" target="_blank" class="btn btn-primary btn-sm" style="margin-top: var(--space-md); display: inline-block;">🔗 Open Link</a>`;
+                    } else if (res.resource_type === 'text' || res.resource_type === 'note') {
+                        actionButton = `<span class="badge badge-info" style="margin-top: var(--space-md); display: inline-block;">📝 View Note</span>`;
+                    }
+                    
+                    const coverStyle = res.cover_image 
+                        ? `background-image: url('${res.cover_image}'); background-size: cover; background-position: center;`
+                        : `background: ${generateGradient(res.gradient_seed || res.title)};`;
+                    
+                    html += `
+                        <div class="card">
+                            <div class="card-cover" style="${coverStyle}">
+                                <span class="badge badge-secondary card-badge">${escapeHtml(typeBadge)}</span>
+                                <span class="badge badge-warning card-badge">${escapeHtml(examBadge)}</span>
+                            </div>
+                            <div class="card-body">
+                                <h3 class="card-title">${escapeHtml(res.title)}</h3>
+                                <p class="card-text">${escapeHtml(res.description || 'No description.')} (${escapeHtml(res.course_name || 'General')})</p>
+                                ${actionButton}
+                            </div>
+                            <div class="card-footer">
+                                <div style="display: flex; gap: var(--space-md); font-size: var(--text-xs); color: var(--text-secondary);">
+                                    <span>❤️ ${res.like_count || 0}</span>
+                                    <span>👁️ ${res.view_count || 0}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                resultsContainer.innerHTML = html;
+            }
+
+            // Bind filters change
+            document.querySelectorAll('.filter-option input').forEach(checkbox => {
+                checkbox.addEventListener('change', applyFiltersAndRender);
+            });
+
+            // Bind sort change
+            sortSelect.addEventListener('change', applyFiltersAndRender);
+
+            // Bind search submission
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    Router.setParam('q', searchInput.value.trim());
+                    fetchResults();
+                }
+            });
+
+            // Trigger search
+            fetchResults();
+        });
+    </script>
+</body>
+</html>

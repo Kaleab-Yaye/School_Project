@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - StudentHub</title>
+    
+    <!-- CSS Design System -->
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/animations.css">
+    
+    <!-- Page Specific Style -->
+    <link rel="stylesheet" href="css/pages/auth.css">
+</head>
+<body>
+
+    <header></header>
+
+    <main class="auth-page">
+        <div class="auth-container animate-scaleIn">
+            
+            <!-- Left Sidebar Graphic -->
+            <div class="auth-sidebar">
+                <div class="auth-sidebar-logo">🎓 StudentHub</div>
+                <div class="auth-sidebar-tagline">
+                    <h2>Welcome Back!</h2>
+                    <p>Log in to access your dashboard, see bookmarked study sheets, and check out new uploads from your peers.</p>
+                </div>
+                <div class="auth-sidebar-footer">
+                    StudentHub - Local College Knowledge Base
+                </div>
+            </div>
+
+            <!-- Right Form Section -->
+            <div class="auth-form-container">
+                <div class="auth-header">
+                    <h1 class="auth-title">Sign In</h1>
+                    <p class="auth-subtitle">Enter your credentials to continue your prep.</p>
+                </div>
+
+                <form id="login-form" novalidate>
+                    
+                    <!-- Username or Email -->
+                    <div class="form-group" id="group-email">
+                        <label for="email" class="form-label">Email or Username</label>
+                        <input type="text" id="email" class="form-input" placeholder="e.g., student@college.edu or admin" required>
+                        <div class="form-error" id="error-email">Please enter a valid email or username.</div>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="form-group" id="group-password">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" id="password" class="form-input" placeholder="••••••••" required>
+                        <div class="form-error" id="error-password">Password is required.</div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="form-group flex justify-between align-center" style="margin-top: var(--space-md);">
+                        <label class="form-checkbox">
+                            <input type="checkbox" id="remember">
+                            <span class="checkbox-box"></span>
+                            Remember me
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%;" id="btn-submit">
+                        <span>🔑</span> Sign In
+                    </button>
+
+                </form>
+
+                <div class="auth-footer">
+                    Don't have an account? <a href="register.html">Sign Up</a>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer></footer>
+
+    <!-- Shared Utilities -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/components.js"></script>
+    
+    <!-- Auth Logic -->
+    <script src="js/auth.js"></script>
+
+</body>
+</html>

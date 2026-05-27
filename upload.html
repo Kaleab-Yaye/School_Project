@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Academic Resource - StudentHub</title>
+    
+    <!-- CSS Design System -->
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/animations.css">
+    
+    <!-- Page Specific Styles -->
+    <link rel="stylesheet" href="css/pages/upload.css">
+</head>
+<body>
+
+    <header></header>
+
+    <main class="container page-content" style="margin-top: var(--space-xl);">
+        
+        <!-- Guided Upload Wizard Card -->
+        <div class="upload-wizard-card">
+            
+            <h1 style="font-family: var(--font-heading); margin-bottom: var(--space-sm);" class="text-center">Upload Study Material</h1>
+            <p style="color: var(--text-secondary); margin-bottom: var(--space-xl);" class="text-center">Follow the wizard steps to categorize and upload your resource sheets.</p>
+            
+            <!-- Wizard Step Progress -->
+            <div class="wizard-progress">
+                <div class="wizard-line-fill" id="wizard-progress-bar"></div>
+                <div class="wizard-step active" data-step="1">
+                    <div class="wizard-step-circle">1</div>
+                    <div class="wizard-step-label">Department</div>
+                </div>
+                <div class="wizard-step" data-step="2">
+                    <div class="wizard-step-circle">2</div>
+                    <div class="wizard-step-label">Class Year</div>
+                </div>
+                <div class="wizard-step" data-step="3">
+                    <div class="wizard-step-circle">3</div>
+                    <div class="wizard-step-label">Semester</div>
+                </div>
+                <div class="wizard-step" data-step="4">
+                    <div class="wizard-step-circle">4</div>
+                    <div class="wizard-step-label">Course</div>
+                </div>
+                <div class="wizard-step" data-step="5">
+                    <div class="wizard-step-circle">5</div>
+                    <div class="wizard-step-label">Upload File</div>
+                </div>
+            </div>
+
+            <!-- Form Wrapper -->
+            <form id="upload-wizard-form" enctype="multipart/form-data">
+                
+                <!-- STEP 1: DEPARTMENT -->
+                <div class="wizard-step-panel active" data-step="1">
+                    <h3 style="margin-bottom: var(--space-md);">Step 1: Choose Department</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: var(--space-lg); font-size: var(--text-sm);">Select a department from the catalog, or click "Create New" if you don't see yours.</p>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Search / Select Department</label>
+                        <div class="searchable-select-container" id="dept-searchable-container">
+                            <input type="text" class="form-input searchable-select-input" id="dept-search-input" placeholder="Search and select department..." autocomplete="off">
+                            <div class="searchable-select-dropdown" id="dept-search-dropdown">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+                        <select class="form-select" id="dept-select" style="display: none;">
+                            <option value="">-- Choose Department --</option>
+                            <option value="new">+ Create New Department...</option>
+                        </select>
+                    </div>
+
+                    <div id="new-dept-group" style="display: none; background: rgba(255,255,255,0.01); border: 1px dashed var(--border); padding: var(--space-md); border-radius: var(--radius-md);" class="animate-fadeIn">
+                        <div class="form-group">
+                            <label class="form-label" for="new-dept-name">New Department Name</label>
+                            <input type="text" id="new-dept-name" class="form-input" placeholder="e.g., Computer Science">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 2: CLASS YEAR -->
+                <div class="wizard-step-panel" data-step="2">
+                    <h3 style="margin-bottom: var(--space-md);">Step 2: Choose Academic Class Year</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: var(--space-lg); font-size: var(--text-sm);">Which class year is this course given in? (e.g. Freshman, Sophomore, Year 1, Senior)</p>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Class Year</label>
+                        <select class="form-select" id="year-select">
+                            <option value="">-- Choose Class Year --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- STEP 3: SEMESTER -->
+                <div class="wizard-step-panel" data-step="3">
+                    <h3 style="margin-bottom: var(--space-md);">Step 3: Choose Semester</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: var(--space-lg); font-size: var(--text-sm);">Which semester is this course given in?</p>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Semester</label>
+                        <select class="form-select" id="semester-select">
+                            <option value="">-- Choose Semester --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- STEP 4: COURSE -->
+                <div class="wizard-step-panel" data-step="4">
+                    <h3 style="margin-bottom: var(--space-md);">Step 4: Choose Course Class</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: var(--space-lg); font-size: var(--text-sm);">Choose the specific subject course class.</p>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Course Class</label>
+                        <select class="form-select" id="course-select">
+                            <option value="">-- Choose Course --</option>
+                            <option value="new">+ Create New Course...</option>
+                        </select>
+                    </div>
+
+                    <div id="new-course-group" style="display: none; background: rgba(255,255,255,0.01); border: 1px dashed var(--border); padding: var(--space-md); border-radius: var(--radius-md);" class="animate-fadeIn">
+                        <div class="form-group">
+                            <label class="form-label" for="new-course-name">New Course Name</label>
+                            <input type="text" id="new-course-name" class="form-input" placeholder="e.g., Data Structures">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="new-course-code">Course Code (Optional)</label>
+                            <input type="text" id="new-course-code" class="form-input" placeholder="e.g., CS201">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="new-course-desc">Brief Description (Optional)</label>
+                            <textarea id="new-course-desc" class="form-textarea" placeholder="Describe the topics covered in this course class..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 5: RESOURCE METADATA & UPLOAD -->
+                <div class="wizard-step-panel" data-step="5">
+                    <h3 style="margin-bottom: var(--space-md);">Step 5: Resource Upload</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: var(--space-lg); font-size: var(--text-sm);">Add titles and details. Select between uploading a PDF, pasting a link, or writing a text note.</p>
+
+                    <!-- Title -->
+                    <div class="form-group">
+                        <label class="form-label" for="res-title">Resource Title</label>
+                        <input type="text" id="res-title" class="form-input" placeholder="e.g. Midterm exam cheat sheet, CS101 final key" required>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="form-group">
+                        <label class="form-label" for="res-desc">Brief Description</label>
+                        <textarea id="res-desc" class="form-textarea" placeholder="Help other students understand what is in this resource..."></textarea>
+                    </div>
+
+                    <!-- Row: Exam Type Tag -->
+                    <div class="form-group">
+                        <label class="form-label" for="exam-type">Category Tag</label>
+                        <select class="form-select" id="exam-type">
+                            <option value="notes">Lecture Notes</option>
+                            <option value="midterm">Midterm Exam</option>
+                            <option value="final">Final Exam</option>
+                            <option value="quiz">Quiz Worksheet</option>
+                            <option value="other">Other Materials</option>
+                        </select>
+                    </div>
+
+                    <!-- Type Switch Selector Buttons -->
+                    <div class="type-switch-container">
+                        <button type="button" class="type-switch-btn active" data-type="pdf">PDF File</button>
+                        <button type="button" class="type-switch-btn" data-type="link">Google Drive Link</button>
+                        <button type="button" class="type-switch-btn" data-type="text">Text Note</button>
+                    </div>
+
+                    <!-- Input Fields depending on type selected -->
+                    <input type="hidden" id="resource-type-input" value="pdf">
+
+                    <!-- PDF Upload Panel -->
+                    <div class="upload-type-panel active" id="panel-pdf">
+                        <div class="dropzone" id="pdf-dropzone">
+                            <div class="dropzone-icon">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto var(--space-sm) auto;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                            </div>
+                            <div class="dropzone-text" id="pdf-dropzone-text">Click or drag and drop a PDF file here</div>
+                            <div style="font-size: var(--text-xs); color: var(--text-tertiary); margin-top: var(--space-xs);">Max file size: 50MB</div>
+                            <input type="file" id="pdf-file-input" accept="application/pdf" style="display: none;">
+                        </div>
+                    </div>
+
+                    <!-- Google Drive Link Panel -->
+                    <div class="upload-type-panel" id="panel-link">
+                        <div class="form-group">
+                            <label class="form-label" for="res-link">Google Drive / Dropbox Link</label>
+                            <input type="url" id="res-link" class="form-input" placeholder="e.g. https://drive.google.com/file/d/...">
+                        </div>
+                    </div>
+
+                    <!-- Text Notes Panel -->
+                    <div class="upload-type-panel" id="panel-text">
+                        <div class="form-group">
+                            <label class="form-label" for="res-text">Resource Content (Markdown Supported)</label>
+                            <textarea id="res-text" class="form-textarea" style="min-height: 200px;" placeholder="Paste exam review guides, study list notes, or plain text summaries..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Wizard Actions -->
+                <div class="wizard-footer">
+                    <button type="button" class="btn btn-secondary" id="wizard-prev-btn" disabled>Back</button>
+                    <button type="button" class="btn btn-primary" id="wizard-next-btn">Next Step</button>
+                </div>
+
+            </form>
+
+        </div>
+    </main>
+
+    <footer></footer>
+
+    <!-- Shared Utilities -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/components.js"></script>
+    <script src="js/router.js"></script>
+    
+    <!-- Wizard Upload Logic -->
+    <script src="js/upload.js"></script>
+
+</body>
+</html>

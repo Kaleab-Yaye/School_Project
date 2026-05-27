@@ -1,0 +1,80 @@
+/* css/pages/browse.css */
+
+.browse-header {
+    background: radial-gradient(circle at 10% 20%, rgba(255, 42, 95, 0.08) 0%, transparent 60%);
+    padding: var(--space-xl) 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: var(--space-xl);
+}
+
+.browse-action-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-lg);
+    flex-wrap: wrap;
+    gap: var(--space-md);
+}
+
+.entity-banner {
+    background: linear-gradient(135deg, rgba(18, 18, 26, 0.95), rgba(10, 10, 15, 0.9));
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: var(--space-2xl);
+    margin-bottom: var(--space-2xl);
+    position: relative;
+    overflow: hidden;
+}
+
+.entity-banner-bg {
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+    opacity: 0.15;
+    z-index: 1;
+}
+
+.entity-banner-content {
+    position: relative;
+    z-index: 2;
+    max-width: 600px;
+}
+
+.entity-banner-title {
+    font-size: var(--text-4xl);
+    font-weight: 800;
+    margin-bottom: var(--space-sm);
+}
+
+.entity-banner-desc {
+    color: var(--text-secondary);
+    font-size: var(--text-md);
+}
+
+/* Semester styling */
+.semester-container {
+    margin-bottom: var(--space-3xl);
+}
+
+.semester-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: var(--space-xs);
+    margin-bottom: var(--space-lg);
+}
+
+.semester-title {
+    font-size: var(--text-xl);
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+}
+
+/* Course Filters */
+.course-filters {
+    display: flex;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-xl);
+    overflow-x: auto;
+    padding-bottom: var(--space-xs);
+}

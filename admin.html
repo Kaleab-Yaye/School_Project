@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - StudentHub</title>
+    
+    <!-- CSS Design System -->
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/animations.css">
+    
+    <!-- Page Specific Styles -->
+    <link rel="stylesheet" href="css/pages/admin.css">
+</head>
+<body>
+
+    <header></header>
+
+    <main class="container page-content" style="margin-top: var(--space-2xl);">
+        
+        <!-- Page Title Header -->
+        <div class="mb-5">
+            <h1 style="font-family: var(--font-heading);">🛡️ Admin Panel</h1>
+            <p style="color: var(--text-secondary);">Manage users, departments, and moderate posted study worksheets.</p>
+        </div>
+
+        <!-- Main Layout wrapper -->
+        <div class="admin-layout animate-fadeInUp">
+            
+            <!-- Tabs Navigation -->
+            <div class="tabs" style="margin-bottom: var(--space-lg);">
+                <div class="tab active" id="tab-users">👤 Users Management</div>
+                <div class="tab" id="tab-depts">🏛️ Departments</div>
+                <div class="tab" id="tab-resources">📄 Resources</div>
+            </div>
+
+            <!-- Dynamic Table Wrapper -->
+            <div id="admin-table-wrapper" class="admin-table-container">
+                <!-- Loaded dynamically via JS -->
+            </div>
+
+        </div>
+    </main>
+
+    <footer></footer>
+
+    <!-- Shared Utilities -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/components.js"></script>
+    <script src="js/router.js"></script>
+
+    <!-- Page Specific Script -->
+    <script src="js/admin.js"></script>
+
+</body>
+</html>

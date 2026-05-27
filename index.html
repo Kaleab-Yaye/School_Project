@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudentHub - Collaborate and Share Study Resources</title>
+    
+    <!-- CSS Design System -->
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/animations.css">
+    
+    <!-- Page Specific Styles -->
+    <link rel="stylesheet" href="css/pages/landing.css">
+</head>
+<body>
+
+    <header></header>
+
+    <main>
+        
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container hero-content animate-fadeInUp">
+                <span class="hero-tag">Empowering Student Collaboration</span>
+                <h1 class="hero-title">Academic Resources,<br><span>Decentralized & Shared</span></h1>
+                <p class="hero-subtitle">Instantly browse past exams, lecture slides, and notes uploaded directly by your classmates. No gatekeeping, just pure knowledge sharing.</p>
+                
+                <div class="hero-search-wrapper">
+                    <div class="search-container">
+                        <button class="search-icon-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+                        <input type="text" id="global-search-input" class="search-input" placeholder="Type a department (e.g. CS), course (e.g. Compilers) or exam title..." autocomplete="off">
+                        <div class="search-dropdown" id="global-search-dropdown"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Ribbon -->
+        <section class="stats-ribbon">
+            <div class="container stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-depts">0</div>
+                    <div class="stat-label">Departments</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-resources">0</div>
+                    <div class="stat-label">Shared Resources</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-members">0</div>
+                    <div class="stat-label">Active Students</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works / Features -->
+        <section class="container features-section">
+            <div class="text-center mb-5">
+                <h2 class="section-title">How StudentHub Works</h2>
+                <p class="section-subtitle">Collaborate to build the ultimate study repository in three simple steps.</p>
+            </div>
+            
+            <div class="grid grid-3 gap-lg">
+                <div class="feature-card animate-fadeInUp delay-100">
+                    <div class="feature-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+                    <h3 class="feature-title">1. Sign Up & Explore</h3>
+                    <p class="feature-desc">Create your student profile to access bookmarks, likes, comments, and file uploads.</p>
+                </div>
+                <div class="feature-card animate-fadeInUp delay-200">
+                    <div class="feature-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+                    <h3 class="feature-title">2. Upload Resources</h3>
+                    <p class="feature-desc">Contribute study sheets, PDFs, drive links, or text notes for any department, year, or course.</p>
+                </div>
+                <div class="feature-card animate-fadeInUp delay-300">
+                    <div class="feature-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/></svg></div>
+                    <h3 class="feature-title">3. Learn Together</h3>
+                    <p class="feature-desc">Find materials, bookmark them for exam season, discuss topics in comments, and rate helpful files.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Departments Preview -->
+        <section class="depts-section">
+            <div class="container">
+                <div class="dept-header">
+                    <div>
+                        <h2 class="section-title">Browse Departments</h2>
+                        <p class="section-subtitle" style="margin-bottom:0;">Drill down into academic structures to find your courses.</p>
+                    </div>
+                    <a href="browse.html" class="btn btn-secondary btn-sm">View All Departments →</a>
+                </div>
+                
+                <div id="featured-depts-container">
+                    <!-- Loaded dynamically via landing page script -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Uploads Section -->
+        <section class="container section">
+            <div class="mb-5">
+                <h2 class="section-title">Recent Contributions</h2>
+                <p class="section-subtitle">Fresh resources uploaded by other students recently.</p>
+            </div>
+            
+            <div id="recent-uploads-container">
+                <!-- Loaded dynamically via landing page script -->
+            </div>
+        </section>
+
+    </main>
+
+    <footer></footer>
+
+    <!-- Shared Utilities -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/components.js"></script>
+    
+    <!-- Home Page Logic & Live Search -->
+    <script src="js/search.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Load stats and content dynamically
+            const deptsContainer = document.getElementById('featured-depts-container');
+            const recentContainer = document.getElementById('recent-uploads-container');
+            
+            // Set skeletons
+            renderSkeleton(deptsContainer, 3, 'card');
+            renderSkeleton(recentContainer, 4, 'card');
+
+            try {
+                // Fetch stats for counters
+                const statsRes = await apiGet('/admin/stats.php');
+                if (statsRes && statsRes.success) {
+                    animateCounter(document.getElementById('stat-depts'), statsRes.data.departments, 1000);
+                    animateCounter(document.getElementById('stat-resources'), statsRes.data.resources, 1000);
+                    animateCounter(document.getElementById('stat-members'), statsRes.data.users, 1000);
+                } else {
+                    // Fallbacks
+                    document.getElementById('stat-depts').textContent = '—';
+                    document.getElementById('stat-resources').textContent = '—';
+                    document.getElementById('stat-members').textContent = '—';
+                }
+
+                // Fetch departments
+                const deptsRes = await apiGet('/departments/list.php');
+                if (deptsRes && deptsRes.success && deptsRes.data.length > 0) {
+                    let html = '<div class="card-grid">';
+                    // Show top 3
+                    deptsRes.data.slice(0, 3).forEach(dept => {
+                        const grad = generateGradient(dept.gradient_seed || dept.name);
+                        html += createCard({
+                            cover: dept.cover_image,
+                            coverGradient: grad,
+                            title: dept.name,
+                            subtitle: dept.description || 'No description provided.',
+                            badges: [{ text: 'Department', type: 'primary' }],
+                            url: `department.html?id=${dept.id}`,
+                            stats: [
+                                { icon: '', value: `${dept.course_count || 0} Courses` }
+                            ]
+                        });
+                    });
+                    html += '</div>';
+                    deptsContainer.innerHTML = html;
+                } else {
+                    renderEmptyState(deptsContainer, {
+                        icon: '',
+                        title: 'No Departments Created Yet',
+                        message: 'Get started by creating a new academic department!',
+                        actionText: 'Browse and Create',
+                        actionUrl: 'browse.html'
+                    });
+                }
+
+                // Fetch recent resources
+                const recentRes = await apiGet('/resources/search.php?limit=4');
+                if (recentRes && recentRes.success && recentRes.data.length > 0) {
+                    let html = '<div class="card-grid">';
+                    recentRes.data.forEach(res => {
+                        const typeBadge = res.resource_type === 'pdf' ? 'PDF Document' : (res.resource_type === 'link' ? 'External Link' : 'Text Note');
+                        const examBadge = res.exam_type.toUpperCase();
+                        
+                        // Create download button based on resource type
+                        let actionButton = '';
+                        if (res.resource_type === 'pdf' && res.file_path) {
+                            actionButton = `<a href="${res.file_path}" download class="btn btn-primary btn-sm" style="margin-top: var(--space-md); display: inline-block;">📥 Download PDF</a>`;
+                        } else if (res.resource_type === 'link' && res.external_link) {
+                            actionButton = `<a href="${res.external_link}" target="_blank" class="btn btn-primary btn-sm" style="margin-top: var(--space-md); display: inline-block;">🔗 Open Link</a>`;
+                        } else if (res.resource_type === 'note') {
+                            actionButton = `<span class="badge badge-info" style="margin-top: var(--space-md); display: inline-block;">📝 View Note</span>`;
+                        }
+                        
+                        const coverStyle = res.cover_image 
+                            ? `background-image: url('${res.cover_image}'); background-size: cover; background-position: center;`
+                            : `background: ${generateGradient(res.gradient_seed || res.title)};`;
+                        
+                        html += `
+                            <div class="card">
+                                <div class="card-cover" style="${coverStyle}">
+                                    <span class="badge badge-secondary card-badge">${escapeHtml(typeBadge)}</span>
+                                    <span class="badge badge-warning card-badge">${escapeHtml(examBadge)}</span>
+                                </div>
+                                <div class="card-body">
+                                    <h3 class="card-title">${escapeHtml(res.title)}</h3>
+                                    <p class="card-text">${escapeHtml(res.description || 'No description.')}</p>
+                                    ${actionButton}
+                                </div>
+                                <div class="card-footer">
+                                    <div style="display: flex; gap: var(--space-md); font-size: var(--text-xs); color: var(--text-secondary);">
+                                        <span>${res.like_count || 0} Likes</span>
+                                        <span>${res.view_count || 0} Views</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += '</div>';
+                    recentContainer.innerHTML = html;
+                } else {
+                    renderEmptyState(recentContainer, {
+                        icon: '',
+                        title: 'No Resources Uploaded Yet',
+                        message: 'Be the first to upload an exam sheet or study notes!',
+                        actionText: 'Upload Resource',
+                        actionUrl: 'upload.html'
+                    });
+                }
+
+            } catch (err) {
+                console.error(err);
+                // In case installation is not completed, notify about setup
+                deptsContainer.innerHTML = `
+                    <div class="empty-state animate-fadeIn" style="border-color: var(--accent-warning);">
+                        <div class="empty-state-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--accent-warning)" stroke-width="1.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+                        <h3 class="empty-state-title">Setup Required</h3>
+                        <p class="empty-state-message">It looks like the MySQL database hasn't been initialized yet. If you are running locally, please execute the database installer script.</p>
+                        <a href="api/setup/install.php" target="_blank" class="btn btn-primary">Run Database Installer</a>
+                    </div>
+                `;
+                recentContainer.innerHTML = '';
+            }
+        });
+    </script>
+</body>
+</html>

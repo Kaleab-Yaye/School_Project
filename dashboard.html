@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - StudentHub</title>
+    
+    <!-- CSS Design System -->
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/animations.css">
+    
+    <!-- Page Specific Styles -->
+    <link rel="stylesheet" href="css/pages/dashboard.css">
+</head>
+<body>
+
+    <header></header>
+
+    <main class="container page-content" style="margin-top: var(--space-2xl);">
+        
+        <div class="dashboard-layout">
+            
+            <!-- Left Side: Public Profile Stats Card -->
+            <aside class="profile-card animate-fadeInUp">
+                <div class="profile-avatar-wrapper">
+                    <div class="avatar avatar-lg" id="profile-avatar" style="font-size: var(--text-3xl);">U</div>
+                </div>
+                <div>
+                    <h2 class="profile-username" id="profile-username">Loading...</h2>
+                    <p class="profile-email" id="profile-email">...</p>
+                    <span class="badge badge-primary mt-2" id="profile-role">Student</span>
+                </div>
+                
+                <div class="profile-meta-info">
+                    <div>Joined: <span id="profile-joined" style="color: var(--text-secondary);">...</span></div>
+                </div>
+            </aside>
+
+            <!-- Right Side: Navigation Tabs and Card Grids -->
+            <section style="flex: 1;">
+                
+                <!-- Dashboard Stats Highlights Row -->
+                <div class="dashboard-stats-grid">
+                    <div class="card stat-card animate-fadeInUp delay-100">
+                        <div class="stat-value" id="highlight-uploads">0</div>
+                        <div class="stat-label">Contributions</div>
+                    </div>
+                    <div class="card stat-card animate-fadeInUp delay-200">
+                        <div class="stat-value" id="highlight-likes">0</div>
+                        <div class="stat-label">Likes Received</div>
+                    </div>
+                    <div class="card stat-card animate-fadeInUp delay-300">
+                        <div class="stat-value" id="highlight-bookmarks">0</div>
+                        <div class="stat-label">Bookmarks</div>
+                    </div>
+                </div>
+
+                <!-- Tabs Navigation -->
+                <div class="tabs">
+                    <div class="tab active" id="tab-uploads">My Uploads</div>
+                    <div class="tab" id="tab-bookmarks">Bookmarked Resources</div>
+                </div>
+
+                <!-- Tab Grid Container -->
+                <div id="dashboard-items-container">
+                    <!-- Cards list populated dynamically -->
+                </div>
+
+            </section>
+
+        </div>
+    </main>
+
+    <footer></footer>
+
+    <!-- Shared Utilities -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/components.js"></script>
+    <script src="js/router.js"></script>
+
+    <!-- Page Specific Script -->
+    <script src="js/dashboard.js"></script>
+
+</body>
+</html>

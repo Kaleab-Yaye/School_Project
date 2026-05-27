@@ -1,0 +1,44 @@
+# Environment & Configuration
+.env
+.env.local
+.env.*.local
+config/database.php
+
+# Uploads & Media
+uploads/
+uploads/**
+!uploads/.gitkeep
+
+# IDE & Editor
+.vscode/
+.idea/
+*.code-workspace
+*.sublime-project
+*.sublime-workspace
+
+# OS Files
+.DS_Store
+Thumbs.db
+.gitkeep
+
+# Logs
+*.log
+error_log
+
+# Temporary Files
+*.tmp
+*.temp
+.cache/
+
+# Node (if using any build tools)
+node_modules/
+package-lock.json
+
+# PHP Session Files
+sessions/
+*.sess
+
+# Backup Files
+*.bak
+*.backup
+*~

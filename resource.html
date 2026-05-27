@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resource Viewer - StudentHub</title>
+    
+    <!-- CSS Design System -->
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/animations.css">
+    
+    <!-- Page Specific Styles -->
+    <link rel="stylesheet" href="css/pages/resource.css">
+</head>
+<body>
+
+    <header></header>
+
+    <!-- Top Breadcrumbs Section -->
+    <div class="container mt-4">
+        <ol class="breadcrumb" id="breadcrumbs-container">
+            <!-- Dynamically populated via JS -->
+        </ol>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="container page-content">
+        <div class="resource-layout" id="resource-layout-container" style="display: none;">
+            
+            <!-- Left Side: Content Viewer & Comments -->
+            <section style="flex: 1; display: flex; flex-direction: column;">
+                
+                <div class="resource-main-card">
+                    <!-- Title and Info -->
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: var(--space-md);">
+                        <div>
+                            <h1 id="resource-title" style="font-family: var(--font-heading); margin-bottom: var(--space-xs);">Loading Resource Title...</h1>
+                            <p style="color: var(--text-secondary); font-size: var(--text-sm);" id="resource-desc">Access sheet file details below.</p>
+                        </div>
+                        <div id="resource-badges">
+                            <!-- Badges (PDF/LINK/NOTES, MID/FINAL) loaded via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Main Viewer Container -->
+                    <div class="resource-viewer-container" id="viewer-container">
+                        <!-- Loaded dynamically depending on resource type -->
+                    </div>
+                </div>
+
+                <!-- Comments Section -->
+                <div class="comments-section">
+                    <h2 style="font-size: var(--text-xl); margin-bottom: var(--space-lg); font-family: var(--font-heading);">
+                        💬 Discussion (<span id="comments-count">0</span>)
+                    </h2>
+                    
+                    <div class="comments-list" id="comments-list-container">
+                        <!-- Comments rows load dynamically -->
+                    </div>
+
+                    <!-- New Comment Form -->
+                    <div id="comment-form-wrapper">
+                        <!-- Form only displayed if user logged in, else login redirect prompt -->
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- Right Side: Sidebar Metadata Details -->
+            <aside class="resource-sidebar-card">
+                
+                <!-- Uploader Profile -->
+                <div>
+                    <div class="sidebar-label">Uploaded By</div>
+                    <div class="uploader-info-row">
+                        <div class="avatar avatar-md" id="uploader-avatar">U</div>
+                        <div>
+                            <div style="font-weight: 600;" id="uploader-name">Student Uploader</div>
+                            <div style="font-size: var(--text-xs); color: var(--text-tertiary);" id="upload-date">Date</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats details counts -->
+                <div class="flex gap-lg" style="border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: var(--space-md) 0;">
+                    <div>
+                        <div class="sidebar-label">Views</div>
+                        <div style="font-size: var(--text-lg); font-weight: 700;" id="view-count-text">0</div>
+                    </div>
+                    <div>
+                        <div class="sidebar-label">Likes</div>
+                        <div style="font-size: var(--text-lg); font-weight: 700;" id="like-count-text">0</div>
+                    </div>
+                </div>
+
+                <!-- Social Actions -->
+                <div class="social-actions-row">
+                    <button class="btn btn-secondary btn-like" id="like-btn">
+                        <span>❤️</span> Like
+                    </button>
+                    <button class="btn btn-secondary btn-bookmark" id="bookmark-btn">
+                        <span>🔖</span> Save
+                    </button>
+                </div>
+
+                <!-- Action Download / Open -->
+                <div id="action-download-wrapper" style="width: 100%;">
+                    <!-- Rendered via JS -->
+                </div>
+
+            </aside>
+
+        </div>
+
+        <!-- Skeleton loader while resource is loading -->
+        <div id="resource-skeleton-loader">
+            <!-- Loading Skeletons -->
+        </div>
+
+    </main>
+
+    <footer></footer>
+
+    <!-- Shared Utilities -->
+    <script src="js/config.js?v=1.1"></script>
+    <script src="js/utils.js?v=1.1"></script>
+    <script src="js/api.js?v=1.1"></script>
+    <script src="js/components.js?v=1.1"></script>
+    <script src="js/router.js?v=1.1"></script>
+    
+    <!-- PDF.js Library for Custom PDF Viewer -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    
+    <!-- Resource Viewer Logic -->
+    <script src="js/resource.js?v=1.2"></script>
+
+</body>
+</html>

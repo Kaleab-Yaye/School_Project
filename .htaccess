@@ -1,0 +1,30 @@
+# student-hub/.htaccess
+
+# Enable URL Rewriting
+RewriteEngine On
+
+# Adjust PHP settings for uploads if Apache allows it
+<IfModule mod_php.c>
+    php_value upload_max_filesize 50M
+    php_value post_max_size 55M
+    php_value max_execution_time 300
+    php_value max_input_time 300
+</IfModule>
+
+# Security Headers
+<IfModule mod_headers.c>
+    # Prevent mime-sniffing
+    Header set X-Content-Type-Options "nosniff"
+    # XSS Protection
+    Header set X-XSS-Protection "1; mode=block"
+    # Clickjacking protection
+    Header set X-Frame-Options "SAMEORIGIN"
+    # CORS policy (optional, helpful if testing from another domain or extension)
+    # Header set Access-Control-Allow-Origin "null"
+    # Header set Access-Control-Allow-Credentials "true"
+    # Header set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
+    # Header set Access-Control-Allow-Methods "GET, POST, OPTIONS, PUT, DELETE"
+</IfModule>
+
+# Prevent direct PHP execution in uploads directory
+# Note: we also create a separate .htaccess in /uploads/ to guarantee this
