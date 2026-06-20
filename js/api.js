@@ -31,7 +31,7 @@ async function apiFetch(endpoint, options = {}) {
             // If 401 Unauthorized, redirect to login unless already on login or register or index pages
             if (response.status === 401) {
                 const currentPage = window.location.pathname;
-                if (!currentPage.includes('login.html') && !currentPage.includes('register.html') && currentPage !== '/student_hub/' && !currentPage.includes('index.html')) {
+                if (!currentPage.includes('login.html') && !currentPage.includes('register.html') && !currentPage.endsWith('/') && !currentPage.includes('index.html')) {
                     window.location.href = 'login.html';
                     return;
                 }

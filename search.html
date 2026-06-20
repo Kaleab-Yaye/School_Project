@@ -42,7 +42,7 @@
                     <div class="filter-section-title">Material Type</div>
                     <label class="filter-option">
                         <input type="checkbox" name="type" value="pdf" checked>
-                        📁 PDFs
+                        📄 PDFs
                     </label>
                     <label class="filter-option">
                         <input type="checkbox" name="type" value="link" checked>
@@ -102,14 +102,14 @@
     <footer></footer>
 
     <!-- Shared Utilities -->
-    <script src="js/config.js"></script>
-    <script src="js/utils.js"></script>
-    <script src="js/api.js"></script>
-    <script src="js/components.js"></script>
-    <script src="js/router.js"></script>
+    <script src="js/config.js?v=200"></script>
+    <script src="js/utils.js?v=200"></script>
+    <script src="js/api.js?v=200"></script>
+    <script src="js/components.js?v=200"></script>
+    <script src="js/router.js?v=200"></script>
 
     <!-- Page Specific Script -->
-    <script src="js/search.js"></script>
+    <script src="js/search.js?v=200"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const resultsContainer = document.getElementById('search-results-container');
@@ -189,9 +189,9 @@
                     // Create download button based on resource type
                     let actionButton = '';
                     if (res.resource_type === 'pdf' && res.file_path) {
-                        actionButton = `<a href="${res.file_path}" download class="btn btn-primary btn-sm" style="margin-top: var(--space-md); display: inline-block;">📥 Download PDF</a>`;
+                        actionButton = `<a href="api/resources/download.php?id=${res.id}" class="btn btn-primary btn-sm" style="margin-top: var(--space-md); display: inline-block;" onclick="event.stopPropagation()">📥 Download PDF</a>`;
                     } else if (res.resource_type === 'link' && res.external_link) {
-                        actionButton = `<a href="${res.external_link}" target="_blank" class="btn btn-primary btn-sm" style="margin-top: var(--space-md); display: inline-block;">🔗 Open Link</a>`;
+                        actionButton = `<a href="${res.external_link}" target="_blank" class="btn btn-primary btn-sm" style="margin-top: var(--space-md); display: inline-block;" onclick="event.stopPropagation()">🔗 Open Link</a>`;
                     } else if (res.resource_type === 'text' || res.resource_type === 'note') {
                         actionButton = `<span class="badge badge-info" style="margin-top: var(--space-md); display: inline-block;">📝 View Note</span>`;
                     }
@@ -201,10 +201,13 @@
                         : `background: ${generateGradient(res.gradient_seed || res.title)};`;
                     
                     html += `
-                        <div class="card">
-                            <div class="card-cover" style="${coverStyle}">
+                        <div onclick="window.location.href='resource.html?id=${res.id}'" class="card">
+                            <div class="card-cover" style="${coverStyle}" id="cover-${res.id}">
                                 <span class="badge badge-secondary card-badge">${escapeHtml(typeBadge)}</span>
-                                <span class="badge badge-warning card-badge">${escapeHtml(examBadge)}</span>
+                                <span class="badge badge-warning card-badge" style="right: var(--space-xs);">${escapeHtml(examBadge)}</span>
+                                <div class="cover-icon-overlay">
+                                    ${res.resource_type === 'pdf' ? '📄' : (res.resource_type === 'link' ? '🔗' : '📝')}
+                                </div>
                             </div>
                             <div class="card-body">
                                 <h3 class="card-title">${escapeHtml(res.title)}</h3>
@@ -222,6 +225,16 @@
                 });
                 html += '</div>';
                 resultsContainer.innerHTML = html;
+
+                // Render PDF thumbnails dynamically
+                filtered.forEach(res => {
+                    if (res.resource_type === 'pdf' && res.file_path) {
+                        const coverEl = document.getElementById(`cover-${res.id}`);
+                        if (coverEl) {
+                            renderPdfThumbnail(res.file_path, coverEl);
+                        }
+                    }
+                });
             }
 
             // Bind filters change
@@ -246,3 +259,4 @@
     </script>
 </body>
 </html>
+

@@ -98,27 +98,167 @@ document.addEventListener('DOMContentLoaded', async () => {
     // ==========================================
     // RENDER CONTENT VIEWER
     // ==========================================
+    function getBasePath() {
+        // Compute the base path from the current page URL
+        // e.g. '/School_Project/resource.html' -> '/School_Project/'
+        const path = window.location.pathname;
+        return path.substring(0, path.lastIndexOf('/') + 1);
+    }
+
     function renderContentViewer(resource) {
         if (resource.resource_type === 'pdf') {
             viewerContainer.innerHTML = `
-                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: var(--space-3xl) var(--space-xl); text-align: center; min-height: 280px;">
-                    <div style="font-size: 4rem; margin-bottom: var(--space-lg);">📄</div>
-                    <h3 style="font-family: var(--font-heading); margin-bottom: var(--space-xs);">${escapeHtml(resource.title)}</h3>
-                    <p style="color: var(--text-secondary); font-size: var(--text-sm); margin-bottom: var(--space-xl);">
-                        This resource is available as a PDF document. Click below to download and view it.
-                    </p>
-                    <a href="${resource.file_path}" download class="btn btn-primary" style="padding: var(--space-sm) var(--space-xl);">
-                        📥 Download PDF File
-                    </a>
+                <div class="pdf-toolbar">
+                    <div class="pdf-toolbar-group">
+                        <button id="pdf-prev-btn" title="Previous Page">◀</button>
+                        <span class="pdf-page-info">Page <span id="pdf-page-num">1</span> of <span id="pdf-page-count">-</span></span>
+                        <button id="pdf-next-btn" title="Next Page">▶</button>
+                    </div>
+                    <div class="pdf-toolbar-group">
+                        <button id="pdf-zoom-out" title="Zoom Out">➖</button>
+                        <span class="pdf-page-info" id="pdf-zoom-percent">100%</span>
+                        <button id="pdf-zoom-in" title="Zoom In">➕</button>
+                    </div>
+                    <div class="pdf-toolbar-group">
+                        <button onclick="event.stopPropagation(); window.location.href='${getBasePath()}api/resources/download.php?id=${resource.id}'" class="btn btn-secondary btn-sm" style="display: flex; align-items: center; gap: 4px;">
+                            📥 Download
+                        </button>
+                    </div>
+                </div>
+                <div class="pdf-pages-wrapper" id="pdf-wrapper">
+                    <div class="pdf-loading" id="pdf-loading-spinner">
+                        <div class="pdf-loading-spinner"></div>
+                        <p>Loading document pages...</p>
+                    </div>
                 </div>
             `;
 
             // Also add download button in sidebar
             downloadWrapper.innerHTML = `
-                <a href="${resource.file_path}" download class="btn btn-primary" style="width: 100%; margin-top: var(--space-sm);">
+                <button onclick="window.location.href='${getBasePath()}api/resources/download.php?id=${resource.id}'" class="btn btn-primary" style="width: 100%; margin-top: var(--space-sm);">
                     📥 Download PDF File
-                </a>
+                </button>
             `;
+
+            // PDF.js rendering states
+            let pdfDoc = null;
+            let pageNum = 1;
+            let pageIsRendering = false;
+            let pageNumPending = null;
+            let scale = 1.2;
+
+            const prevBtn = document.getElementById('pdf-prev-btn');
+            const nextBtn = document.getElementById('pdf-next-btn');
+            const zoomInBtn = document.getElementById('pdf-zoom-in');
+            const zoomOutBtn = document.getElementById('pdf-zoom-out');
+            const pageNumText = document.getElementById('pdf-page-num');
+            const pageCountText = document.getElementById('pdf-page-count');
+            const zoomPercentText = document.getElementById('pdf-zoom-percent');
+            const pdfWrapper = document.getElementById('pdf-wrapper');
+
+            // Set worker source path
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+            // Build absolute URL for the PDF file
+            const pdfAbsoluteUrl = getBasePath() + resource.file_path;
+            console.log('Loading PDF from:', pdfAbsoluteUrl);
+
+            // Load Document
+            pdfjsLib.getDocument(pdfAbsoluteUrl).promise.then(pdfDoc_ => {
+                pdfDoc = pdfDoc_;
+                pageCountText.textContent = pdfDoc.numPages;
+                
+                // Hide loader and render first page
+                const spinner = document.getElementById('pdf-loading-spinner');
+                if (spinner) spinner.remove();
+                
+                renderPage(pageNum);
+            }).catch(err => {
+                console.error("Error loading PDF document:", err);
+                pdfWrapper.innerHTML = `
+                    <div class="pdf-error">
+                        <div style="font-size: 3rem; margin-bottom: var(--space-md);">⚠️</div>
+                        <h3>Failed to load PDF document</h3>
+                        <p style="color: var(--text-secondary); font-size: var(--text-sm); max-width: 400px; margin-top: var(--space-xs);">
+                            ${escapeHtml(err.message || 'The file may be corrupted or missing on the server.')}
+                        </p>
+                    </div>
+                `;
+            });
+
+            function renderPage(num) {
+                pageIsRendering = true;
+                
+                pdfDoc.getPage(num).then(page => {
+                    const viewport = page.getViewport({ scale: scale });
+                    
+                    // Create or find canvas
+                    let canvas = pdfWrapper.querySelector('canvas');
+                    if (!canvas) {
+                        canvas = document.createElement('canvas');
+                        pdfWrapper.appendChild(canvas);
+                    }
+                    
+                    const ctx = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    
+                    const renderCtx = {
+                        canvasContext: ctx,
+                        viewport: viewport
+                    };
+                    
+                    const renderTask = page.render(renderCtx);
+                    renderTask.promise.then(() => {
+                        pageIsRendering = false;
+                        if (pageNumPending !== null) {
+                            renderPage(pageNumPending);
+                            pageNumPending = null;
+                        }
+                    });
+                    
+                    // Update text elements
+                    pageNumText.textContent = num;
+                    zoomPercentText.textContent = `${Math.round(scale * 100)}%`;
+                    
+                    // Disable/enable navigation buttons
+                    prevBtn.disabled = (num <= 1);
+                    nextBtn.disabled = (num >= pdfDoc.numPages);
+                });
+            }
+
+            function queueRenderPage(num) {
+                if (pageIsRendering) {
+                    pageNumPending = num;
+                } else {
+                    renderPage(num);
+                }
+            }
+
+            // Button Event Listeners
+            prevBtn.addEventListener('click', () => {
+                if (pageNum <= 1) return;
+                pageNum--;
+                queueRenderPage(pageNum);
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (pageNum >= pdfDoc.numPages) return;
+                pageNum++;
+                queueRenderPage(pageNum);
+            });
+
+            zoomInBtn.addEventListener('click', () => {
+                if (scale >= 3.0) return;
+                scale = Math.min(3.0, scale + 0.2);
+                queueRenderPage(pageNum);
+            });
+
+            zoomOutBtn.addEventListener('click', () => {
+                if (scale <= 0.6) return;
+                scale = Math.max(0.6, scale - 0.2);
+                queueRenderPage(pageNum);
+            });
         } else if (resource.resource_type === 'link') {
             // External URL link card
             viewerContainer.innerHTML = `

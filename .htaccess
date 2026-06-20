@@ -1,4 +1,6 @@
-# student-hub/.htaccess
+# Force UTF-8 encoding for all files served by Apache
+AddDefaultCharset UTF-8
+AddCharset UTF-8 .html .css .js .json .php
 
 # Enable URL Rewriting
 RewriteEngine On

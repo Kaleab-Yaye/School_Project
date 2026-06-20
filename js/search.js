@@ -138,18 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     } else if (type === 'resource') {
                         icon = '📄';
                         sub = item.parent ? `[${item.parent.toUpperCase()}]` : '';
-                        
-                        // Handle resource download/open action
-                        if (item.resource_type === 'pdf' && item.file_path) {
-                            action = () => {
-                                const link = document.createElement('a');
-                                link.href = item.file_path;
-                                link.download = item.name;
-                                link.click();
-                            };
-                        } else if (item.resource_type === 'link' && item.external_link) {
-                            action = () => { window.open(item.external_link, '_blank'); };
-                        }
+                        action = () => { window.location.href = `resource.html?id=${item.id}`; };
                     }
 
                     itemDiv.innerHTML = `

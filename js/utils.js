@@ -165,3 +165,49 @@ function animateCounter(element, target, duration) {
         }
     }, Math.max(stepTime, 20));
 }
+
+// Dynamically load PDF.js CDN library on demand
+async function loadPdfJs() {
+    if (window.pdfjsLib) return window.pdfjsLib;
+    return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+        script.onload = () => {
+            window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+            resolve(window.pdfjsLib);
+        };
+        script.onerror = () => reject(new Error('Failed to load PDF.js'));
+        document.head.appendChild(script);
+    });
+}
+
+// Asynchronously render the first page of a PDF file onto a card cover
+async function renderPdfThumbnail(pdfUrl, coverElement) {
+    if (!pdfUrl || !coverElement) return;
+    try {
+        const pdfjs = await loadPdfJs();
+        const loadingTask = pdfjs.getDocument(pdfUrl);
+        const pdf = await loadingTask.promise;
+        const page = await pdf.getPage(1);
+        
+        // Render at a small scale suitable for a thumbnail
+        const viewport = page.getViewport({ scale: 0.4 });
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+        
+        await page.render({
+            canvasContext: context,
+            viewport: viewport
+        }).promise;
+        
+        const dataUrl = canvas.toDataURL();
+        coverElement.style.backgroundImage = `url('${dataUrl}')`;
+        coverElement.style.backgroundSize = 'cover';
+        coverElement.style.backgroundPosition = 'top center';
+        coverElement.classList.add('pdf-loaded');
+    } catch (e) {
+        console.error('Failed to generate PDF thumbnail for ' + pdfUrl, e);
+    }
+}

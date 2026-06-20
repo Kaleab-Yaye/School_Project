@@ -151,6 +151,23 @@
     justify-content: center;
 }
 
+.cover-icon-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3rem;
+    color: rgba(255, 255, 255, 0.85);
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    z-index: 2;
+    transition: opacity var(--transition-fast);
+}
+
+.card-cover.pdf-loaded .cover-icon-overlay {
+    opacity: 0;
+    pointer-events: none;
+}
+
 .card-cover img {
     width: 100%;
     height: 100%;
